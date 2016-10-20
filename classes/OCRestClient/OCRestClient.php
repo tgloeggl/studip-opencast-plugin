@@ -16,7 +16,7 @@
         protected $username;
         protected $password;
         public $serviceName = 'ParentRestClientClass';
-        
+
         static function getInstance()
         {
             if(!property_exists(get_called_class(), 'me')) {
@@ -27,10 +27,10 @@
             }
             return static::$me;
         }
-        
+
         function __construct($matterhorn_base_url = null, $username = null, $password = null){
             $this->matterhorn_base_url = $matterhorn_base_url;
-            
+
             $this->username = !is_null($username) ? $username : 'matterhorn_system_account';
             $this->password = !is_null($password) ? $password : 'CHANGE_ME';
 
@@ -74,12 +74,12 @@
                     } else {
                         throw new Exception(sprintf(_("Es sinde keine Konfigurationsdaten für den Servicetyp **%s** vorhanden."), $service_type));
                     }
-            
+
                 } else {
                     throw new Exception(_("Es wurde kein Servicetyp angegeben."));
                 }
             } catch (Exception $e) {
-            
+
             }
         }
 
@@ -90,16 +90,16 @@
          *	@param string $service_user
          *  @param string $service_password
          */
-        function setConfig($service_url, $service_user, $service_password) {
-            if(isset($service_url, $service_user, $service_password)) {                    
-                $stmt = DBManager::get()->prepare("REPLACE INTO `oc_config`  (service_url, service_user, service_password) VALUES (?,?,?)");
-                return $stmt->execute(array($service_url, $service_user, $service_password));
+        function setConfig($config_id = 1, $service_url, $service_user, $service_password) {
+            if(isset($service_url, $service_user, $service_password)) {
+                $stmt = DBManager::get()->prepare("REPLACE INTO `oc_config` (config_id, service_url, service_user, service_password) VALUES (?,?,?,?)");
+                return $stmt->execute(array($config_id, $service_url, $service_user, $service_password));
             } else {
                 throw new Exception(_('Die Konfigurationsparameter wurden nicht korrekt angegeben.'));
             }
 
         }
-        
+
         function clearConfig($host = null) {
             $stmt = DBManager::get()->prepare("DELETE FROM `oc_config` WHERE 1;");
             $stmt->execute();
@@ -122,7 +122,7 @@
                 } else {
                     $options[CURLOPT_HTTPGET] = 1;
                 }
-                         
+
                 curl_setopt_array($this->ochandler, $options);
                 $response = curl_exec($this->ochandler);
                 $httpCode = curl_getinfo($this->ochandler, CURLINFO_HTTP_CODE);
@@ -141,7 +141,7 @@
             }
 
         }
-        
+
         /**
          * function getXML - performs a REST-Call and retrieves response in XML
          */
@@ -160,7 +160,7 @@
                 curl_setopt_array($this->ochandler, $options);
                 $response = curl_exec($this->ochandler);
                 $httpCode = curl_getinfo($this->ochandler, CURLINFO_HTTP_CODE);
-                
+
                 if($with_res_code) {
                     return array($response, $httpCode);
                 } else {
@@ -186,11 +186,11 @@
             return true;
             if (@fsockopen($this->matterhorn_base_url)) {
                 return true;
-            }          
+            }
             throw new Exception(sprintf(_('Es besteht momentan keine Verbindung zum gewählten Service "%s". Versuchen Sie es bitte zu einem späteren Zeitpunkt noch einmal. Sollte dieses Problem weiterhin auftreten kontaktieren Sie bitte einen Administrator'), $this->serviceName));
         }
-        
-     
+
+
 
     }
 ?>
