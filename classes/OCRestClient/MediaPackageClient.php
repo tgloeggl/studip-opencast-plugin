@@ -4,11 +4,11 @@ require_once "OCRestClient.php";
 
 class MediaPackageClient extends OCRestClient {
     static $me;
-    public function __construct() 
+    public function __construct($config_id = 1)
     {
         $this->serviceName = 'MediaPackageClient';
         try {
-            if ($config = parent::getConfig('mediapackage')) {
+            if ($config = parent::getConfig('mediapackage', $config_id)) {
                 parent::__construct($config['service_url'],
                                     $config['service_user'],
                                     $config['service_password']);
@@ -28,6 +28,6 @@ class MediaPackageClient extends OCRestClient {
             return $res;
         } else return false;
     }
-    
-  
+
+
 }

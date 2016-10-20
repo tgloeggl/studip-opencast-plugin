@@ -4,9 +4,9 @@
     {
         static $me;
         public $serviceName = 'Search';
-        function __construct() {
+        function __construct($config_id = 1) {
             try {
-                if ($config = parent::getConfig('search')) {
+                if ($config = parent::getConfig('search', $config_id)) {
                     parent::__construct($config['service_url'],
                                         $config['service_user'],
                                         $config['service_password']);
@@ -97,13 +97,13 @@
             } else return false;
 
         }
-        
-        
+
+
         function getBaseURL() {
            $base = $this->matterhorn_base_url;
            $url = preg_replace('/\/search/', '', $base);
            return $url;
-        } 
+        }
 
 
     }

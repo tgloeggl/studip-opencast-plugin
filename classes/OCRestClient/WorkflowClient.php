@@ -3,10 +3,10 @@
     class WorkflowClient extends OCRestClient
     {
         static $me;
-        function __construct() {
+        function __construct($config_id = 1) {
             $this->serviceName = 'WorkflowClient';
             try {
-                if ($config = parent::getConfig('workflow')) {
+                if ($config = parent::getConfig('workflow', $config_id)) {
                     parent::__construct($config['service_url'],
                                         $config['service_user'],
                                         $config['service_password']);
@@ -17,12 +17,12 @@
 
             }
         }
-        
+
         /**
          * getWorkflowInstance - Get a specific workflow instance
          *
          * @param $id The workflow instance identifier
-         * 
+         *
          * @return $result A JSON representation of a workflow instance
          */
         function getWorkflowInstance($id) {
@@ -31,7 +31,7 @@
                 return $result->workflow;
             } else return false;
         }
-        
+
         /**
          * getInstances() - returns all Workflow instances for a given SeriesID
          *
@@ -63,7 +63,7 @@
                 return false;
             }
         }
-    
-    
+
+
     }
 ?>

@@ -97,7 +97,7 @@ class CourseController extends StudipController
             // Config-Dialog
             $this->connectedSeries = OCSeriesModel::getConnectedSeries($this->course_id, true);
             $this->unconnectedSeries = OCSeriesModel::getUnconnectedSeries($this->course_id, true);
-            $this->workflow_client = WorkflowClient::getInstance();
+            $this->workflow_client = WorkflowClient::getInstance($this->course_id);
             $workflow_ids = OCModel::getWorkflowIDsforCourse($this->course_id);
 
             $this->series_metadata = OCSeriesModel::getConnectedSeriesDB($this->course_id);
@@ -115,7 +115,7 @@ class CourseController extends StudipController
 
         Navigation::activateItem('course/opencast/overview');
         try {
-                $this->search_client = SearchClient::getInstance();
+                $this->search_client = SearchClient::getInstance($this->course_id);
 
                 $occourse = new OCCourseModel($this->course_id);
                 $this->coursevis = $occourse->getSeriesVisibility();
@@ -160,10 +160,10 @@ class CourseController extends StudipController
                     $this->minute = date('i');
 
                     //check needed services before showing upload form
-                    UploadClient::getInstance()->checkService();
-                    IngestClient::getInstance()->checkService();
-                    MediaPackageClient::getInstance()->checkService();
-                    SeriesClient::getInstance()->checkService();
+                    UploadClient::getInstance($this->course_id)->checkService();
+                    IngestClient::getInstance($this->course_id)->checkService();
+                    MediaPackageClient::getInstance($this->course_id)->checkService();
+                    SeriesClient::getInstance($this->course_id)->checkService();
 
 
 
@@ -225,7 +225,7 @@ class CourseController extends StudipController
             OCSeriesModel::removeSeriesforCourse($course_id, $series_id);
 
             /* Uncomment iff you really want to remove this series from the OC Core
-            $series_client = SeriesClient::getInstance();
+            $series_client = SeriesClient::getInstance($this->course_id);
             $series_client->removeSeries($series_id);
             */
             $this->flash['messages'] = array('success'=> _("Die Zuordnung wurde entfernt"));
@@ -257,9 +257,9 @@ class CourseController extends StudipController
         $this->cseries = OCModel::getConnectedSeries($this->course_id);
         $this->dates  =  OCModel::getFutureDates($this->course_id);
 
-        $search_client = SearchClient::getInstance();
+        $search_client = SearchClient::getInstance($this->course_id);
 
-        $workflow_client = WorkflowClient::getInstance();
+        $workflow_client = WorkflowClient::getInstance($this->course_id);
     }
 
 
@@ -268,7 +268,7 @@ class CourseController extends StudipController
 
         $this->course_id = Request::get('cid');
         if($GLOBALS['perm']->have_studip_perm('dozent', $this->course_id)){
-            $scheduler_client = SchedulerClient::getInstance();
+            $scheduler_client = SchedulerClient::getInstance($this->course_id);
             if($scheduler_client->scheduleEventForSeminar($this->course_id, $resource_id, $termin_id)) {
                 $this->flash['messages'] = array('success'=> _("Aufzeichnung wurde geplant."));
                 log_event('OC_SCHEDULE_EVENT', $termin_id, $this->course_id);
@@ -286,7 +286,7 @@ class CourseController extends StudipController
 
         $this->course_id = Request::get('cid');
         if($GLOBALS['perm']->have_studip_perm('dozent', $this->course_id)){
-            $scheduler_client = SchedulerClient::getInstance();
+            $scheduler_client = SchedulerClient::getInstance($this->course_id);
             if( $scheduler_client->deleteEventForSeminar($this->course_id, $resource_id, $termin_id)) {
                 $this->flash['messages'] = array('success'=> _("Die geplante Aufzeichnung wurde entfernt"));
                 log_event('OC_CANCEL_SCHEDULED_EVENT', $termin_id, $this->course_id);
@@ -306,7 +306,7 @@ class CourseController extends StudipController
 
         $course_id = Request::get('cid');
         if($GLOBALS['perm']->have_studip_perm('dozent', $course_id)){
-            $scheduler_client = SchedulerClient::getInstance();
+            $scheduler_client = SchedulerClient::getInstance($this->course_id);
             $scheduled = OCModel::checkScheduledRecording($course_id, $resource_id, $termin_id);
 
             if( $scheduler_client->updateEventForSeminar($course_id, $resource_id, $termin_id, $scheduled['event_id'])) {
@@ -326,7 +326,7 @@ class CourseController extends StudipController
     function create_series_action()
     {
         if($GLOBALS['perm']->have_studip_perm('dozent', $this->course_id)){
-            $this->series_client = SeriesClient::getInstance();
+            $this->series_client = SeriesClient::getInstance($this->course_id);
             if($this->series_client->createSeriesForSeminar($this->course_id)) {
                 $this->flash['messages']['success'] = _("Series wurde angelegt");
                 log_event('OC_CREATE_SERIES', $this->course_id);
@@ -403,10 +403,10 @@ class CourseController extends StudipController
 
         try {
             //check needed services before showing upload form
-            UploadClient::getInstance()->checkService();
-            IngestClient::getInstance()->checkService();
-            MediaPackageClient::getInstance()->checkService();
-            SeriesClient::getInstance()->checkService();
+            UploadClient::getInstance($this->course_id)->checkService();
+            IngestClient::getInstance($this->course_id)->checkService();
+            MediaPackageClient::getInstance($this->course_id)->checkService();
+            SeriesClient::getInstance($this->course_id)->checkService();
 
             foreach($scripts as $path) {
                 $script_attributes = array(
@@ -453,7 +453,7 @@ class CourseController extends StudipController
     static function schedule($resource_id, $termin_id, $course_id) {
         $scheduled = OCModel::checkScheduledRecording($course_id, $resource_id, $termin_id);
         if(!$scheduled) {
-            $scheduler_client = SchedulerClient::getInstance();
+            $scheduler_client = SchedulerClient::getInstance($this->course_id);
 
             if($scheduler_client->scheduleEventForSeminar($course_id, $resource_id, $termin_id)) {
                 log_event('OC_SCHEDULE_EVENT', $termin_id, $course_id);
@@ -468,7 +468,7 @@ class CourseController extends StudipController
 
         $scheduled = OCModel::checkScheduledRecording($course_id, $resource_id, $termin_id);
         if($scheduled){
-            $scheduler_client = SchedulerClient::getInstance();
+            $scheduler_client = SchedulerClient::getInstance($this->course_id);
             $scheduler_client->updateEventForSeminar($course_id, $resource_id, $termin_id, $scheduled['event_id']);
             log_event('OC_REFRESH_SCHEDULED_EVENT', $termin_id, $course_id);
         } else {
@@ -479,7 +479,7 @@ class CourseController extends StudipController
     static function unschedule($resource_id, $termin_id, $course_id) {
         $scheduled = OCModel::checkScheduledRecording($course_id, $resource_id, $termin_id);
         if($scheduled) {
-            $scheduler_client = SchedulerClient::getInstance();
+            $scheduler_client = SchedulerClient::getInstance($this->course_id);
 
             if( $scheduler_client->deleteEventForSeminar($course_id, $resource_id, $termin_id)) {
                 log_event('OC_CANCEL_SCHEDULED_EVENT', $termin_id, $course_id);
@@ -519,7 +519,7 @@ class CourseController extends StudipController
 
             $this->set_status('200');
             $active_id = $episode_id;
-            $this->search_client = SearchClient::getInstance();
+            $this->search_client = SearchClient::getInstance($this->course_id);
 
             if($this->theodul) {
                 $embed =  $this->search_client->getBaseURL() ."/engage/theodul/ui/core.html?id=".$active_id . "&mode=embed";

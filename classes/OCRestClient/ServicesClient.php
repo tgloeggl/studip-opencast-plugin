@@ -3,10 +3,10 @@
     class ServicesClient extends OCRestClient
     {
         static $me;
-        function __construct() {
+        function __construct($config_id = 1) {
             $this->serviceName = 'ServicesClient';
             try {
-                if ($config = parent::getConfig('services')) {
+                if ($config = parent::getConfig('services', $config_id)) {
                     parent::__construct($config['service_url'],
                                         $config['service_user'],
                                         $config['service_password']);
@@ -17,7 +17,7 @@
 
             }
         }
-        
+
         /**
          * getComponents() - retrieves episode system components from conntected Opencast-Matterhorn Core
          *
@@ -26,16 +26,16 @@
         function getRESTComponents() {
 
             $service_url = "/services.json";
-        
+
             if($result = $this->getJSON($service_url)){
                 return $result->services->service;
             } else {
                 return false;
             }
         }
-    
-    
+
+
     }
 
-    
+
 ?>
