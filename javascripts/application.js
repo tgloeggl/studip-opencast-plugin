@@ -78,14 +78,14 @@ OC = {
         });
 
     },
-    
+
     initUpload : function(maxChunk){
         jQuery(document).ready(function(){
             $('#btn_accept').click(function() {
                 OC.formData.submit();
                 return false;
             });
-            
+
             $('#video_upload').fileupload({
                 limitMultiFileUploads: 1,
                 autoupload: false,
@@ -94,10 +94,10 @@ OC = {
                     var file = data.files[0];
                     $('#total_file_size').attr('value', file.size);
                     $('#file_name').attr('value', file.name);
-                    $('#upload_info').html('<p>Name: ' 
-                                                + file.name 
+                    $('#upload_info').html('<p>Name: '
+                                                + file.name
                                                 + ' Größe: '
-                                                + OC.getFileSize(file.size) 
+                                                + OC.getFileSize(file.size)
                                                 + '</p>');
                     $('#upload_info').val(file.name);
                     OC.formData = data;
@@ -108,7 +108,7 @@ OC = {
                     $( "#progressbar" ).progressbar({
                         value: 0
                     }).addClass('oc_mediaupload_progressbar').show().css({'background': '#d0d7e4'});;
-                    
+
                 },
                 progressall: function(e, data) {
                     var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -193,7 +193,7 @@ OC = {
                 }
 
             } if(reload || response == ""){
-                window.open(STUDIP.ABSOLUTE_URI_STUDIP + "plugins.php/opencast/course/index/false", '_self');
+                window.open(STUDIP.ABSOLUTE_URI_STUDIP + "plugins.php/opencast/course/index/false?cid="+course_id, '_self');
             } else window.setTimeout(function(){OC.getWorkflowProgressForCourse(course_id, false)}, 25000)
 
         });
@@ -278,4 +278,3 @@ OC = {
         var episodeList = new List('episodes', options);
     }
 };
-

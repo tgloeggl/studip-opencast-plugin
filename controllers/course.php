@@ -25,7 +25,7 @@ require_once $this->trails_root.'/models/OCCourseModel.class.php';
 
 class CourseController extends StudipController
 {
-    
+
     /**
      * Sets the page title. Page title always includes the course name.
      *
@@ -39,7 +39,7 @@ class CourseController extends StudipController
         $page_title    = implode(' - ', $title_parts);
         PageLayout::setTitle($page_title);
     }
-    
+
 
     /**
      * Common code for all actions: set default layout and page title.
@@ -47,8 +47,8 @@ class CourseController extends StudipController
     function before_filter(&$action, &$args)
     {
         $this->flash = Trails_Flash::instance();
-        
-        PageLayout::addScript($GLOBALS['ocplugin_path']  . '/vendor/jquery.fileupload.js');
+
+        //PageLayout::addScript($GLOBALS['ocplugin_path']  . '/vendor/jquery.fileupload.js');
         PageLayout::addScript($GLOBALS['ocplugin_path']  . '/vendor/jquery.simplePagination.js');
         PageLayout::addScript($GLOBALS['ocplugin_path']  . '/vendor/circle-progress/circle-progress.js');
         PageLayout::addScript($GLOBALS['ocplugin_path']  . '/vendor/listjs/list.min.js');
@@ -61,14 +61,14 @@ class CourseController extends StudipController
         $this->set_layout($layout);
         $this->pluginpath = $this->dispatcher->trails_root;
         $this->course_id = $_SESSION['SessionSeminar'];
-        
+
         // notify on trails action
         $klass = substr(get_called_class(), 0, -10);
         $name = sprintf('oc_course.performed.%s_%s', $klass, $action);
         NotificationCenter::postNotification($name, $this);
         // change this variable iff theodulplayer is active
-        $this->theodul = false;
-        
+        $this->theodul = true;
+
     }
 
     /**
@@ -179,7 +179,7 @@ class CourseController extends StudipController
             $this->render_action('_error');
         }
     }
-    
+
     function config_action()
     {
         if (isset($this->flash['messages'])) {
@@ -190,15 +190,15 @@ class CourseController extends StudipController
         $navigation->setImage('../../'.$this->dispatcher->trails_root.'/images/oc-logo-black.png');
         $this->course_id = $_SESSION['SessionSeminar'];
         $this->set_title(_("Opencast Konfiguration"));
-        
-  
+
+
         $this->connectedSeries = OCSeriesModel::getConnectedSeries($this->course_id);
         $this->unconnectedSeries = OCSeriesModel::getUnconnectedSeries($this->course_id, true);
 
     }
-    
+
     function edit_action($course_id)
-    {   
+    {
 
         $series = Request::getArray('series');
         foreach( $series as $serie) {
@@ -209,7 +209,7 @@ class CourseController extends StudipController
 
         $this->redirect(PluginEngine::getLink('opencast/course/index'));
     }
-    
+
     function remove_series_action($ticket)
     {
 
@@ -219,14 +219,14 @@ class CourseController extends StudipController
         $series_id = Request::get('series_id');
         $delete = Request::get('delete');
         if( $delete && check_ticket($ticket)) {
-            
+
             $scheduled_episodes = OCSeriesModel::getScheduledEpisodes($course_id);
 
             OCSeriesModel::removeSeriesforCourse($course_id, $series_id);
 
             /* Uncomment iff you really want to remove this series from the OC Core
             $series_client = SeriesClient::getInstance();
-            $series_client->removeSeries($series_id); 
+            $series_client->removeSeries($series_id);
             */
             $this->flash['messages'] = array('success'=> _("Die Zuordnung wurde entfernt"));
 
@@ -235,9 +235,9 @@ class CourseController extends StudipController
         else{
             $this->flash['messages']['error'] = _("Die Zuordnung konnte nicht entfernt werden.");
         }
-        
+
         $this->flash['cand_delete'] = true;
-        
+
         $this->redirect(PluginEngine::getLink('opencast/course/index'));
     }
 
@@ -248,17 +248,17 @@ class CourseController extends StudipController
         Navigation::activateItem('course/opencast/scheduler');
         $navigation = Navigation::getItem('/course/opencast');
         $navigation->setImage('../../'.$this->dispatcher->trails_root.'/images/oc-logo-black.png');
-        
+
         $this->set_title(_("Opencast Aufzeichnungen planen"));
-        
+
 
         $this->course_id = $_SESSION['SessionSeminar'];
-        
+
         $this->cseries = OCModel::getConnectedSeries($this->course_id);
         $this->dates  =  OCModel::getFutureDates($this->course_id);
-        
+
         $search_client = SearchClient::getInstance();
-         
+
         $workflow_client = WorkflowClient::getInstance();
     }
 
@@ -330,7 +330,7 @@ class CourseController extends StudipController
             if($this->series_client->createSeriesForSeminar($this->course_id)) {
                 $this->flash['messages']['success'] = _("Series wurde angelegt");
                 log_event('OC_CREATE_SERIES', $this->course_id);
-                
+
             } else {
                 throw new Exception(_("Verbindung zum Series-Service konnte nicht hergestellt werden."));
             }
@@ -394,13 +394,13 @@ class CourseController extends StudipController
         $this->date = date('Y-m-d');
         $this->hour = date('H');
         $this->minute = date('i');
-       
+
         $scripts = array(
-            '/vendor/jquery.fileupload.js',
+            /* '/vendor/jquery.fileupload.js', */
             '/vendor/jquery.ui.widget.js'
         );
         Navigation::activateItem('course/opencast/upload');
-        
+
         try {
             //check needed services before showing upload form
             UploadClient::getInstance()->checkService();
@@ -423,7 +423,7 @@ class CourseController extends StudipController
     }
 
 
-    
+
     function bulkschedule_action()
     {
         $course_id =  Request::get('cid');
@@ -449,7 +449,7 @@ class CourseController extends StudipController
 
         $this->redirect(PluginEngine::getLink('opencast/course/scheduler'));
     }
-    
+
     static function schedule($resource_id, $termin_id, $course_id) {
         $scheduled = OCModel::checkScheduledRecording($course_id, $resource_id, $termin_id);
         if(!$scheduled) {
@@ -463,7 +463,7 @@ class CourseController extends StudipController
             }
         }
     }
-    
+
     static function updateschedule($resource_id, $termin_id, $course_id) {
 
         $scheduled = OCModel::checkScheduledRecording($course_id, $resource_id, $termin_id);
@@ -473,9 +473,9 @@ class CourseController extends StudipController
             log_event('OC_REFRESH_SCHEDULED_EVENT', $termin_id, $course_id);
         } else {
             self::schedule($resource_id, $termin_id, $course_id);
-        }  
+        }
     }
-    
+
     static function unschedule($resource_id, $termin_id, $course_id) {
         $scheduled = OCModel::checkScheduledRecording($course_id, $resource_id, $termin_id);
         if($scheduled) {
@@ -489,7 +489,7 @@ class CourseController extends StudipController
             }
         }
     }
-    
+
     function remove_failed_action($workflow_id) {
         if(OCModel::removeWorkflowIDforCourse($workflow_id, $this->course_id)){
             $this->flash['messages'] = array('success'=> _("Die hochgeladenen Daten wurden gelöscht."));

@@ -28,15 +28,15 @@ class UploadController extends StudipController
     private $error = array();
     private $upload = null;
     private $ingest = null;
-    
-    public function upload_file_action() 
+
+    public function upload_file_action()
     {
         $OCUpload = new OCUpload();
         //checks if file is uploaded and returns file object
         if($this->file = $OCUpload->post()) {
             $this->upload = UploadClient::getInstance();
             $this->ingest = IngestClient::getInstance();
-            
+
             if($this->file->isNew()) {
                 $this->initNewUpload();
             }
@@ -56,7 +56,7 @@ class UploadController extends StudipController
                 $this->endUpload();
                 //file_put_contents("/tmp/oc_log.txt", 'Job fertig um: '  . date('d.m.Y H:i:s',time()) .' Uhr \n');
             }
-            
+
         } else { //if($file = $OCUpload->post())
                $this->error[] = _('Fehler beim hochladen der Datei');
         }
@@ -76,7 +76,7 @@ class UploadController extends StudipController
         if(!$this->addTrack()) {
             $this->error[] = _('Fehler beim hinzufügen des Tracks');
             return false;
-        } 
+        }
         //Step 3. Add catalogs (e.g. series.xml, episode.xml)
         if(!$this->addSeriesDC()) {
             $this->error[] = _('Fehler beim hinzufügen der Series');
@@ -87,23 +87,23 @@ class UploadController extends StudipController
             return false;
         }
         // comment indicates how specific workflows can be chosen
-        if($content = $this->ingest->ingest($this->file->getMediaPackage()))//,'trimming', '?videoPreview=true&trimHold=false&archiveOP=true'))
+        if($content = $this->ingest->ingest($this->file->getMediaPackage(), 'upload'))//,'trimming', '?videoPreview=true&trimHold=false&archiveOP=true'))
         {
-           
+
             $simplexml = simplexml_load_string($content);
             $json = json_encode($simplexml);
             $x = json_decode($json, true);
             $result = $x['@attributes'];
-            
+
             OCModel::setWorkflowIDforCourse($result['id'], $_SESSION['SessionSeminar'], $GLOBALS['auth']->auth['uid'], time());
-            
+
             $this->file->clearSession();
             log_event('OC_UPLOAD_MEDIA', $result['id'], $_SESSION['SessionSeminar']);
             //echo 'Ingest Started: '.htmlentities($content);
         } else echo 'upload failed';
-        
+
     }
-   
+
     private function addTrack()
     {
         $mediaPClient = MediaPackageClient::getInstance();
@@ -119,15 +119,15 @@ class UploadController extends StudipController
             $this->file->setMediaPackage($newMPackage);
             return true;
         }
-        
+
     }
     private function addEpisodeDC()
     {
         $episodeDC = $this->file->getEpisodeDC();
         $newMediaPackage = '';
         if($newMediaPackage = $this->ingest->addDCCatalog(
-                $this->file->getMediaPackage(), 
-                $episodeDC, 
+                $this->file->getMediaPackage(),
+                $episodeDC,
                 'dublincore/episode'))
         {
             $this->file->setMediaPackage($newMediaPackage);
@@ -140,12 +140,12 @@ class UploadController extends StudipController
     private function addSeriesDC() {
         $seriesDCs = OCSeriesModel::getSeriesDCs($_SESSION['SessionSeminar']);
         if(is_array($seriesDCs)){
-        foreach($seriesDCs as $dc) 
+        foreach($seriesDCs as $dc)
         {
             $newMediaPackage = '';
             if($newMediaPackage = $this->ingest->addDCCatalog(
-                    $this->file->getMediaPackage(), 
-                    $dc, 
+                    $this->file->getMediaPackage(),
+                    $dc,
                     'dublincore/series'))
             {
                 $this->file->setMediaPackage($newMediaPackage);
@@ -163,10 +163,10 @@ class UploadController extends StudipController
         if($res = $this->ingest->createMediaPackage()) {
             $this->file->setMediaPackage($res);
             //Step 2.1 Generate job ID -- for every new track upload job
-            if($jobID = $this->upload->newJob($this->file->getName(), 
-                                        $this->file->getSize(), 
-                                        OC_UPLOAD_CHUNK_SIZE, 
-                                        $this->file->getFlavor(), 
+            if($jobID = $this->upload->newJob($this->file->getName(),
+                                        $this->file->getSize(),
+                                        OC_UPLOAD_CHUNK_SIZE,
+                                        $this->file->getFlavor(),
                                         $this->file->getmediaPackage())) {
                 $this->file->setJobID($jobID);
             } else {
@@ -181,7 +181,7 @@ class UploadController extends StudipController
             $value = mb_convert_encoding($value,"ISO-8859-1",'auto');
             $episodeData[$key] = $value;
         }
-        
+
         $this->file->setEpisodeData($episodeData);
     }
     private function uploadChunk()
@@ -190,12 +190,12 @@ class UploadController extends StudipController
         {
             usleep(500);
         }
-      
+
         $res = $this->upload->uploadChunk($this->file->getJobID(),
                 $this->file->getChunk(),
                 $this->file->getChunkPath());
         switch($res[0]) {
-            case 200: 
+            case 200:
                 $this->file->setChunkStatus('mh');
                 break;
             case 400:
