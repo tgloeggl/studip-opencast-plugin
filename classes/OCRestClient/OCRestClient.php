@@ -107,11 +107,11 @@
 
         }
 
-        function clearConfig($host = null) {
-            $stmt = DBManager::get()->prepare("DELETE FROM `oc_config` WHERE 1;");
-            $stmt->execute();
-            $stmt = DBManager::get()->prepare("DELETE FROM `oc_endpoints` WHERE 1;");
-            return $stmt->execute();
+        function clearConfig($config_id) {
+            $stmt = DBManager::get()->prepare("DELETE FROM `oc_config` WHERE config_id = ?;");
+            $stmt->execute(array($config_id));
+            $stmt = DBManager::get()->prepare("DELETE FROM `oc_endpoints` WHERE config_id = ?;");
+            return $stmt->execute(array($config_id));
         }
 
         /**

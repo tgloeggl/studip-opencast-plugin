@@ -20,10 +20,9 @@ class OCEndpointModel
      *
      *  @return array endpoints
      */
-    static function getBaseServerConf(){
-        $stmt = DBManager::get()->prepare("SELECT * FROM `oc_config` WHERE 1
-            ORDER BY config_id ASC LIMIT 1");
-        $stmt->execute();
+    static function getBaseServerConf($config_id){
+        $stmt = DBManager::get()->prepare("SELECT * FROM `oc_config` WHERE config_id = ?");
+        $stmt->execute(array($config_id));
         $config =  $stmt->fetch(PDO::FETCH_ASSOC);
         return $config;
     }
