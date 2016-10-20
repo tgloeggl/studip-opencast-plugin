@@ -77,34 +77,25 @@ class AdminController extends AuthenticatedController
         $service_url =  parse_url(Request::get('info_url'));
         $config_id = 1; // we assume that we want to configure the new opencast
 
-        if(!array_key_exists('scheme', $service_url)) {
+        if (!array_key_exists('scheme', $service_url)) {
             $this->flash['messages'] = array('error' => _('Es wurde kein gültiges URL-Schema angegeben.'));
-            OCRestClient::clearConfig($service_url['host']);
+            OCRestClient::clearConfig($config_id);
             $this->redirect(PluginEngine::getLink('opencast/admin/config'));
         } else {
-            $service_host = $service_url['scheme'] .'://' . $service_url['host'] . (isset($service_url['port']) ? ':' . $service_url['port'] : '') ;
-            $this->info_url = $service_url['host'] . (isset($service_url['port']) ? ':' . $service_url['port'] : '') .  $service_url['path'];
-
-
-            $this->info_user = Request::get('info_user');
+            $service_host        = $service_url['scheme'] .'://' . $service_url['host'] . (isset($service_url['port']) ? ':' . $service_url['port'] : '') ;
+            $this->info_url      = $service_url['host'] . (isset($service_url['port']) ? ':' . $service_url['port'] : '') .  $service_url['path'];
+            $this->info_user     = Request::get('info_user');
             $this->info_password = Request::get('info_password');
-
 
             OCRestClient::clearConfig($config_id);
             OCRestClient::setConfig($config_id, $service_host, $this->info_user, $this->info_password);
-
-
-
             OCEndpointModel::setEndpoint($config_id, $this->info_url, 'services');
 
-
             $services_client = new ServicesClient($config_id);
-
-
             $comp = $services_client->getRESTComponents();
-            if($comp) {
-                $services = OCModel::retrieveRESTservices($comp);
 
+            if ($comp) {
+                $services = OCModel::retrieveRESTservices($comp);
 
                 foreach($services as $service_url => $service_type) {
 
@@ -116,52 +107,38 @@ class AdminController extends AuthenticatedController
                     }
                 }
 
-
                 $this->flash['messages'] = array('success' => sprintf(_("Änderungen wurden erfolgreich übernommen. Es wurden %s Endpoints für die angegeben Opencast Matterhorn Installation gefunden und in der Stud.IP Konfiguration eingetragen"), count($comp)));
             } else {
                 $this->flash['messages'] = array('error' => _('Es wurden keine Endpoints für die angegeben Opencast Matterhorn Installation gefunden. Überprüfen Sie bitte die eingebenen Daten.'));
             }
-
-
-
         }
+
         $redirect = true;
 
         // stupid duplication for slave-config
         $slave_url =  parse_url(Request::get('slave_url'));
         $config_id = 2; // we assume that we want to configure slave opencast server
 
-        if(!array_key_exists('scheme', $slave_url)) {
+        if (!array_key_exists('scheme', $slave_url)) {
             $this->flash['messages'] = array('error' => _('Es wurde kein gültiges URL-Schema angegeben.'));
             OCRestClient::clearConfig($config_id);
             //$this->redirect(PluginEngine::getLink('opencast/admin/config'));
         } else {
-            $slave_host = $slave_url['scheme'] .'://' . $slave_url['host'] . (isset($slave_url['port']) ? ':' . $slave_url['port'] : '') ;
-            $this->slave_url = $slave_url['host'] . (isset($slave_url['port']) ? ':' . $slave_url['port'] : '') .  $slave_url['path'];
-
-
-            $this->slave_user = Request::get('slave_user');
+            $slave_host           = $slave_url['scheme'] .'://' . $slave_url['host'] . (isset($slave_url['port']) ? ':' . $slave_url['port'] : '') ;
+            $this->slave_url      = $slave_url['host'] . (isset($slave_url['port']) ? ':' . $slave_url['port'] : '') .  $slave_url['path'];
+            $this->slave_user     = Request::get('slave_user');
             $this->slave_password = Request::get('slave_password');
 
-
-            OCRestClient::clearConfig($slave_url['host']);
-
-
+            OCRestClient::clearConfig($config_id);
             OCRestClient::setConfig($config_id, $slave_host, $this->slave_user, $this->slave_password);
-
-
-
             OCEndpointModel::setEndpoint($config_id, $this->slave_url, 'services');
 
             //fix client call here for new config
             $services_client2 = new ServicesClient($config_id);
+            $comp = $services_client2->getRESTComponents();
 
-
-
-            $comp = $services_client->getRESTComponents();
-            if($comp) {
+            if ($comp) {
                 $services = OCModel::retrieveRESTservices($comp);
-
 
                 foreach($services as $slave_url => $slave_type) {
 
@@ -172,7 +149,6 @@ class AdminController extends AuthenticatedController
                         OCEndpointModel::setEndpoint($config_id, $slave_comp[0], $slave_type);
                     }
                 }
-
 
                 $this->flash['messages'] = array('success' => sprintf(_("Änderungen wurden erfolgreich übernommen. Es wurden %s Endpoints für die angegeben Opencast Slave Installation gefunden und in der Stud.IP Konfiguration eingetragen"), count($comp)));
             } else {
