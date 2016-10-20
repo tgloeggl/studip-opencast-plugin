@@ -1,5 +1,5 @@
 <?PHP
-  
+
 class OCEndpointModel
 {
     /**
@@ -13,21 +13,22 @@ class OCEndpointModel
         $endpoints =  $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $endpoints;
     }
-    
-    
+
+
     /**
      *  function getEndpoints - get all Endpoints
      *
      *  @return array endpoints
      */
     static function getBaseServerConf(){
-        $stmt = DBManager::get()->prepare("SELECT * FROM `oc_config` WHERE 1");
+        $stmt = DBManager::get()->prepare("SELECT * FROM `oc_config` WHERE 1
+            ORDER BY config_id ASC LIMIT 1");
         $stmt->execute();
         $config =  $stmt->fetch(PDO::FETCH_ASSOC);
         return $config;
     }
-    
-    
+
+
     /**
      *  function setEndpoint - sets config into DB for given REST-Service-Endpoint
      *
@@ -35,7 +36,7 @@ class OCEndpointModel
      *	@param string $service_type
      */
     function setEndpoint($service_host, $service_type) {
-        if(isset($service_host,$service_type)) {                    
+        if(isset($service_host,$service_type)) {
             if($service_host != '') {
                 $stmt = DBManager::get()->prepare("REPLACE INTO `oc_endpoints` (service_url,service_host, service_type) VALUES (?,?,?)");
                 return $stmt->execute(array($service_host.'/'.$service_type, $service_host, $service_type));
