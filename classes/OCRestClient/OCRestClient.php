@@ -215,7 +215,7 @@
 
             $stmt->execute(array($course_id));
 
-            return $stmt->fetchColumn();
+            return $stmt->fetchColumn() ?: 1;
         }
 
         /**
@@ -234,7 +234,7 @@
 
             $stmt->execute(array($series_id));
 
-            return $stmt->fetchColumn();
+            return $stmt->fetchColumn() ?: 1;
         }
 
         /**
@@ -253,6 +253,6 @@
 
             $stmt->execute(array($workflow_id));
 
-            return $stmt->fetchColumn();
+            return $stmt->fetchColumn() ?: 1;
         }
     }
