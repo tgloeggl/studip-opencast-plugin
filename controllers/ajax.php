@@ -21,7 +21,7 @@ class AjaxController extends StudipController
     {
         $this->render_text(_("Ups.."));
     }
-    
+
     function getSeries_action() {
 
         $allseries = OCSeriesModel::getAllSeries();
@@ -43,32 +43,32 @@ class AjaxController extends StudipController
             }
             $this->render_text(json_encode($u_series));
         }
-        
-        
+
+
     }
-    
+
     function getEpisodes_action($series_id) {
-        
-        $search_client = SearchClient::getInstance();
+
+        $search_client = SearchClient::getInstance(OCRestClient::getCourseIdForSeries($series_id));
         $episodes = $search_client->getEpisodes($series_id);
-    
+
         $result = array();
-        
+
         foreach($episodes as $episode) {
             if(key_exists('mediapackage', $episode)){
                 $result[] = $episode;
-            } 
+            }
         }
         $this->render_text(json_encode($result));
-        
+
     }
-    
+
     function setEpisodeOrdersForCourse_action() {
         $course_id = false;
         $positions =  Request::getArray('positions');
 
         foreach($positions  as $position_item) {
-            OCModel::setCoursePositionForEpisode($position_item['episode_id'], $position_item['position'], 
+            OCModel::setCoursePositionForEpisode($position_item['episode_id'], $position_item['position'],
                     $position_item['course_id'], $position_item['visibility'], $position_item['mkdate']);
                     $course_id = $position_item['course_id'];
         }
@@ -82,7 +82,7 @@ class AjaxController extends StudipController
      * @throws Trails_DoubleRenderError
      */
     function getWorkflowStatus_action($workflow_id){
-        $this->workflow_client = WorkflowClient::getInstance();
+        $this->workflow_client = WorkflowClient::getInstance(OCRestClient::getCourseIdForWorkflow($workflow_id));
         $resp = $this->workflow_client->getWorkflowInstance($workflow_id);
         $this->render_text(json_encode($resp));
 
@@ -90,7 +90,7 @@ class AjaxController extends StudipController
 
     function getWorkflowStatusforCourse_action($course_id){
         $workflow_ids = OCModel::getWorkflowIDsforCourse($course_id);
-        $this->workflow_client = WorkflowClient::getInstance();
+        $this->workflow_client = WorkflowClient::getInstance($course_id);
         if(!empty($workflow_ids)){
             foreach($workflow_ids as $workflow_id) {
                 $resp = $this->workflow_client->getWorkflowInstance($workflow_id['workflow_id']);

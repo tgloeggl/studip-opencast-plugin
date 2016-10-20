@@ -17,8 +17,18 @@
         protected $password;
         public $serviceName = 'ParentRestClientClass';
 
+<<<<<<< HEAD
         static function getInstance()
+=======
+        static function getInstance($course_id = null)
+>>>>>>> 3244e4cd1c288ba84ce618d46fc16316448a508f
         {
+            $config_id = 1;     // use default config if nothing else is given
+
+            if ($course_id) {
+                $config_id = self::getConfigIdForCourse($course_id);
+            }
+
             if(!property_exists(get_called_class(), 'me')) {
                 throw new Exception('Every child of '.get_class().' needs to implement static property "$me"');
             }
@@ -60,17 +70,18 @@
           * @return array configuration for corresponding client
           *
           */
-        function getConfig($service_type) {
+        function getConfig($service_type, $config_id = 1)
+        {
             try {
-                if(isset($service_type)) {
+                if (isset($service_type)) {
                     $stmt = DBManager::get()->prepare("SELECT * FROM `oc_endpoints` WHERE service_type = ?");
                     $stmt->execute(array($service_type));
                     $config = $stmt->fetch(PDO::FETCH_ASSOC);
-                    if($config) {
-                    $stmt = DBManager::get()->prepare("SELECT `service_user`, `service_password`  FROM `oc_config` WHERE 1");
-                    $stmt->execute();
-                    $config = $config + $stmt->fetch(PDO::FETCH_ASSOC);
-                    return $config;
+                    if ($config) {
+                        $stmt = DBManager::get()->prepare("SELECT `service_user`, `service_password`  FROM `oc_config` WHERE 1");
+                        $stmt->execute();
+                        $config = $config + $stmt->fetch(PDO::FETCH_ASSOC);
+                        return $config;
                     } else {
                         throw new Exception(sprintf(_("Es sinde keine Konfigurationsdaten für den Servicetyp **%s** vorhanden."), $service_type));
                     }
@@ -189,8 +200,66 @@
             }
             throw new Exception(sprintf(_('Es besteht momentan keine Verbindung zum gewählten Service "%s". Versuchen Sie es bitte zu einem späteren Zeitpunkt noch einmal. Sollte dieses Problem weiterhin auftreten kontaktieren Sie bitte einen Administrator'), $this->serviceName));
         }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 3244e4cd1c288ba84ce618d46fc16316448a508f
 
+
+        /**
+         * get id of used config for passed course
+         *
+         * @param string $course_id
+         *
+         * @return int
+         */
+        static function getConfigIdForCourse($course_id)
+        {
+            $stmt = DBManager::get()->prepare("SELECT config_id
+                FROM oc_seminar_series
+                WHERE seminar_id = ?");
+
+            $stmt->execute(array($course_id));
+
+            return $stmt->fetchColumn();
+        }
+
+        /**
+         * get course-id for passed series
+         *
+         * @param string $series_id
+         *
+         * @return string
+         */
+
+        static function getCourseIdForSeries($series_id)
+        {
+            $stmt = DBManager::get()->prepare("SELECT seminar_id
+                FROM oc_seminar_series
+                WHERE series_id = ?");
+
+            $stmt->execute(array($series_id));
+
+            return $stmt->fetchColumn();
+        }
+
+        /**
+         * get course-id for passed series
+         *
+         * @param string $series_id
+         *
+         * @return string
+         */
+
+        static function getCourseIdForWorkflow($workflow_id)
+        {
+            $stmt = DBManager::get()->prepare("SELECT seminar_id
+                FROM oc_seminar_workflows
+                WHERE workflow_id = ?");
+
+            $stmt->execute(array($workflow_id));
+
+            return $stmt->fetchColumn();
+        }
     }
-?>

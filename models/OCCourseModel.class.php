@@ -209,8 +209,7 @@ class OCCourseModel
 
 
         if(!$cached_series || $forced_reload){
-
-            $search_client = SearchClient::getInstance();
+            $search_client = SearchClient::getInstance(OCRestClient::getCourseIdForSeries($series_id));
             $series = $search_client->getEpisodes($series_id);
 
             if($forced_reload && $cached_series){

@@ -4,10 +4,10 @@
     class SchedulerClient extends OCRestClient
     {
         static $me;
-        function __construct() {
+        function __construct($config_id = 1) {
             $this->serviceName = 'SchedulerClient';
             try {
-                if ($config = parent::getConfig('recordings')) {
+                if ($config = parent::getConfig('recordings', $config_id)) {
                     parent::__construct($config['service_url'],
                                         $config['service_user'],
                                         $config['service_password']);
@@ -29,7 +29,7 @@
          * @return bool success or not
          */
         function scheduleEventForSeminar($course_id, $resource_id, $termin_id) {
-      
+
             $post = self::createEventMetadata($course_id, $resource_id, $termin_id);
             $rest_end_point = "/";
             $uri = $rest_end_point;
@@ -53,9 +53,9 @@
                         $eventid = $matches[1];
                     }
                 }
-   
+
                 OCModel::scheduleRecording($course_id, $resource_id, $termin_id, $eventid);
-   
+
                 return true;
             } else {
                 return false;
@@ -99,7 +99,7 @@
                 return false;
             }
         }
-        
+
         /**
          * updateEventForSeminar - updates an event
          * TODO: Implement put route
@@ -111,7 +111,7 @@
         function updateEventForSeminar($course_id, $resource_id, $termin_id, $event_id) {
 
             $post = self::createEventMetadata($course_id, $resource_id, $termin_id);
-            
+
             $rest_end_point = "/";
             $uri = $rest_end_point;
             // setting up a curl-handler
@@ -130,8 +130,8 @@
                 return false;
             }
         }
-        
-        
+
+
         static function createEventMetadata($course_id, $resource_id, $termin_id) {
             $dublincore = utf8_encode(OCModel::createScheduleEventXML($course_id, $resource_id, $termin_id));
 
@@ -189,7 +189,7 @@
             //                    org.opencastproject.workflow.definition=ncast' : '';
 
             return array('dublincore' => $dublincore, 'agentparameters' => $agentparameters);
-            
+
         }
     }
 ?>
