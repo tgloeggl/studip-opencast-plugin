@@ -17,11 +17,7 @@
         protected $password;
         public $serviceName = 'ParentRestClientClass';
 
-<<<<<<< HEAD
-        static function getInstance()
-=======
         static function getInstance($course_id = null)
->>>>>>> 3244e4cd1c288ba84ce618d46fc16316448a508f
         {
             $config_id = 1;     // use default config if nothing else is given
 
@@ -200,11 +196,6 @@
             }
             throw new Exception(sprintf(_('Es besteht momentan keine Verbindung zum gewählten Service "%s". Versuchen Sie es bitte zu einem späteren Zeitpunkt noch einmal. Sollte dieses Problem weiterhin auftreten kontaktieren Sie bitte einen Administrator'), $this->serviceName));
         }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 3244e4cd1c288ba84ce618d46fc16316448a508f
 
 
         /**
