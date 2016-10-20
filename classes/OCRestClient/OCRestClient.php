@@ -29,7 +29,7 @@
                 throw new Exception('Every child of '.get_class().' needs to implement static property "$me"');
             }
             if (!is_object(static::$me)) {
-                static::$me = new static();
+                static::$me = new static($config_id);
             }
             return static::$me;
         }
