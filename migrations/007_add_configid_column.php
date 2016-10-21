@@ -14,7 +14,7 @@ class AddConfigidColumn extends Migration {
         $db->query("ALTER TABLE `oc_seminar_workflows` ADD `config_id` INT NOT NULL DEFAULT 1 FIRST;");
 
         $db->query("UPDATE oc_resources SET config_id = 2");
-        $db->query("UPDATE oc_seminar_series SET config_id = 2");
+        $db->query("UPDATE oc_seminar_series SET config_id = 2, schedule = 0");
         $db->query("UPDATE oc_seminar_workflows SET config_id = 2");
     }
 

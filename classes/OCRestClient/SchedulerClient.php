@@ -45,14 +45,16 @@
             $resArray = explode("\n", $response);
 
             if ($httpCode == 201){
-                $pttrn = '#Location: http:/'.$this->matterhorn_base_url.'/(.+?).xml#Uis';
+                $location = parse_url($this->matterhorn_base_url);
+                $pttrn = '#Location: http:/'.$location['host'].'/(.+?).xml#Uis';
                 foreach($resArray as $resp) {
-
+                    
                     // THIS could be changed. Keep an eye on futre oc releases...
                     if(preg_match($pttrn, $resp, $matches)) {
                         $eventid = $matches[1];
                     }
                 }
+
 
                 OCModel::scheduleRecording($course_id, $resource_id, $termin_id, $eventid);
 

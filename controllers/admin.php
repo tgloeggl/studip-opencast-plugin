@@ -106,8 +106,8 @@ class AdminController extends AuthenticatedController
                         OCEndpointModel::setEndpoint($config_id, $service_comp[0], $service_type);
                     }
                 }
-
-                $this->flash['messages'] = array('success' => sprintf(_("Änderungen wurden erfolgreich übernommen. Es wurden %s Endpoints für die angegeben Opencast Matterhorn Installation gefunden und in der Stud.IP Konfiguration eingetragen"), count($comp)));
+                $success_message = sprintf(_("Änderungen wurden erfolgreich übernommen. Es wurden %s Endpoints für die angegeben Opencast Matterhorn Installation gefunden und in der Stud.IP Konfiguration eingetragen"), count($comp));
+                $this->flash['messages'] = array('success' => $success_message);
             } else {
                 $this->flash['messages'] = array('error' => _('Es wurden keine Endpoints für die angegeben Opencast Matterhorn Installation gefunden. Überprüfen Sie bitte die eingebenen Daten.'));
             }
@@ -150,7 +150,7 @@ class AdminController extends AuthenticatedController
                     }
                 }
 
-                $this->flash['messages'] = array('success' => sprintf(_("Änderungen wurden erfolgreich übernommen. Es wurden %s Endpoints für die angegeben Opencast Slave Installation gefunden und in der Stud.IP Konfiguration eingetragen"), count($comp)));
+                $this->flash['messages'] = array('success' => $success_message . " " . sprintf(_("Es wurden %s Endpoints für die angegeben Opencast Slave Installation gefunden und eingetragen"), count($comp)));
             } else {
                 $this->flash['messages'] = array('error' => _('Es wurden keine Endpoints für die angegeben Opencast Slave Installation gefunden. Überprüfen Sie bitte die eingebenen Daten.'));
             }
