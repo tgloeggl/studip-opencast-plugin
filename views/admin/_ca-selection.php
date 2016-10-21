@@ -9,7 +9,7 @@
     <?= $resource['name'] ?>
 </td>
 <? if(!empty($assigned_agents)) :?>
-    <td>   
+    <td>
         <?=$assigned_agents['capture_agent']?>
     </td>
     <td>
@@ -25,13 +25,13 @@
                     <? else: ?>
                         <?= Assets::img('icons/16/blue/video.png', array('title' => _("Beschäftigt"))) ?>
                     <? endif; ?>
-        
+
             </td>
             <td>
                 <a href="<?=PluginEngine::getLink('opencast/admin/remove_ca/'. $resource['resource_id']
                         .'/'. $agent->name)?>">
                         <?= Assets::img('icons/16/blue/trash.png', array('title' => _("Verknüpfung entfernen."))) ?>
-                </a>     
+                </a>
             </td>
         <? endif; ?>
     <? endforeach; ?>
@@ -60,9 +60,9 @@
 
         <? if($definitions) :foreach($definitions->definitions->definition as $definition) :?>
             <? if(is_object($definition->tags)) : ?>
-                <? if(is_array($definition->tags->tag) && in_array('schedule', $definition->tags->tag)) :?>
+                <? if(is_array($definition->tags->tag) && in_array('schedule-ng', $definition->tags->tag)) :?>
                 <option  value="<?= $definition->id ?>"><?= $definition->id ?></option>
-                <? elseif($definition->tags->tag == 'schedule') :?>
+            <? elseif($definition->tags->tag == 'schedule-ng') :?>
                     <option  value="<?= $definition->id ?>"><?= $definition->id ?></option>
                 <? endif;?>
             <? endif; ?>
