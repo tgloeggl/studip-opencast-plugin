@@ -453,7 +453,7 @@ class CourseController extends StudipController
     static function schedule($resource_id, $termin_id, $course_id) {
         $scheduled = OCModel::checkScheduledRecording($course_id, $resource_id, $termin_id);
         if(!$scheduled) {
-            $scheduler_client = SchedulerClient::getInstance($this->course_id);
+            $scheduler_client = SchedulerClient::getInstance($course_id);
 
             if($scheduler_client->scheduleEventForSeminar($course_id, $resource_id, $termin_id)) {
                 log_event('OC_SCHEDULE_EVENT', $termin_id, $course_id);
@@ -468,7 +468,7 @@ class CourseController extends StudipController
 
         $scheduled = OCModel::checkScheduledRecording($course_id, $resource_id, $termin_id);
         if($scheduled){
-            $scheduler_client = SchedulerClient::getInstance($this->course_id);
+            $scheduler_client = SchedulerClient::getInstance($course_id);
             $scheduler_client->updateEventForSeminar($course_id, $resource_id, $termin_id, $scheduled['event_id']);
             log_event('OC_REFRESH_SCHEDULED_EVENT', $termin_id, $course_id);
         } else {
@@ -479,7 +479,7 @@ class CourseController extends StudipController
     static function unschedule($resource_id, $termin_id, $course_id) {
         $scheduled = OCModel::checkScheduledRecording($course_id, $resource_id, $termin_id);
         if($scheduled) {
-            $scheduler_client = SchedulerClient::getInstance($this->course_id);
+            $scheduler_client = SchedulerClient::getInstance($course_id);
 
             if( $scheduler_client->deleteEventForSeminar($course_id, $resource_id, $termin_id)) {
                 log_event('OC_CANCEL_SCHEDULED_EVENT', $termin_id, $course_id);
