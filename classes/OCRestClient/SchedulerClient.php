@@ -46,7 +46,7 @@
 
             if ($httpCode == 201){
                 $location = parse_url($this->matterhorn_base_url);
-                $pttrn = '#Location: http:/'.$location['host'].'/(.+?).xml#Uis';
+                $pttrn = '#Location: http:/'.$location['path'].'/(.+?).xml#Uis';
                 foreach($resArray as $resp) {
 
                     // THIS could be changed. Keep an eye on futre oc releases...
@@ -54,7 +54,6 @@
                         $eventid = $matches[1];
                     }
                 }
-
 
                 OCModel::scheduleRecording($course_id, $resource_id, $termin_id, $eventid);
 
@@ -85,7 +84,7 @@
 
             // setting up a curl-handler
             $location = parse_url($this->matterhorn_base_url);
-            curl_setopt($this->ochandler,CURLOPT_URL,$location['host'].$uri);
+            curl_setopt($this->ochandler,CURLOPT_URL,$location['path'].$uri);
             curl_setopt($this->ochandler,CURLOPT_CUSTOMREQUEST, "DELETE");
             //TODO über REST Klasse laufen lassen, getXML, getJSON...
 
@@ -119,7 +118,7 @@
             $uri = $rest_end_point;
             // setting up a curl-handler
             $location = parse_url($this->matterhorn_base_url);
-            curl_setopt($this->ochandler,CURLOPT_URL,$location['host'].$uri.$event_id);
+            curl_setopt($this->ochandler,CURLOPT_URL,$location['path'].$uri.$event_id);
             curl_setopt($this->ochandler, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt($this->ochandler, CURLOPT_POSTFIELDS, $post);
             curl_setopt($this->ochandler, CURLOPT_HEADER, true);
