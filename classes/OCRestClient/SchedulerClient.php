@@ -48,7 +48,7 @@
                 $location = parse_url($this->matterhorn_base_url);
                 $pttrn = '#Location: http:/'.$location['host'].'/(.+?).xml#Uis';
                 foreach($resArray as $resp) {
-                    
+
                     // THIS could be changed. Keep an eye on futre oc releases...
                     if(preg_match($pttrn, $resp, $matches)) {
                         $eventid = $matches[1];
@@ -84,7 +84,8 @@
             $uri = $rest_end_point;
 
             // setting up a curl-handler
-            curl_setopt($this->ochandler,CURLOPT_URL,$this->matterhorn_base_url.$uri);
+            $location = parse_url($this->matterhorn_base_url);
+            curl_setopt($this->ochandler,CURLOPT_URL,$location['host'].$uri);
             curl_setopt($this->ochandler,CURLOPT_CUSTOMREQUEST, "DELETE");
             //TODO über REST Klasse laufen lassen, getXML, getJSON...
 
@@ -117,7 +118,8 @@
             $rest_end_point = "/";
             $uri = $rest_end_point;
             // setting up a curl-handler
-            curl_setopt($this->ochandler,CURLOPT_URL,$this->matterhorn_base_url.$uri.$event_id);
+            $location = parse_url($this->matterhorn_base_url);
+            curl_setopt($this->ochandler,CURLOPT_URL,$location['host'].$uri.$event_id);
             curl_setopt($this->ochandler, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt($this->ochandler, CURLOPT_POSTFIELDS, $post);
             curl_setopt($this->ochandler, CURLOPT_HEADER, true);
