@@ -168,15 +168,19 @@ class OCCourseModel
 
 
                 if(is_object($episode->mediapackage)){
-
+                    $prespreview = false;
 
                     foreach($episode->mediapackage->attachments->attachment as $attachment) {
                         if($attachment->type === "presenter/search+preview") $preview = $attachment->url;
-                        
+
                         if($attachment->type === "presentation/player+preview") {
                             $prespreview = $attachment->url;
                         }
                     }
+
+
+
+
 
 
                     foreach($episode->mediapackage->media->track as $track) {

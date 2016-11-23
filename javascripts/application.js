@@ -251,6 +251,8 @@ OC = {
             jQuery('#oc_balls').show();
             jQuery('.oce_playercontainer').addClass('oc_opaque');
 
+            var previmage = jQuery(this).data('previewimage');
+
             jQuery.get(STUDIP.ABSOLUTE_URI_STUDIP + "plugins.php/opencast/course/get_player/" +  episode_id + "/" +  cid).done(function(data) {
 
                 var episode = data.episode_data;
@@ -259,9 +261,10 @@ OC = {
                 var player_template = jQuery('#playerTemplate').html();
                 var player = _.template(player_template,{episode:episode, theodul:data.theodul, embed:data.embed,dozent:dozent,engage_player_url:data.engage_player_url});
                 */
-                
+
                 var preview_template = jQuery('#previewimageTemplate').html();
-                var preview = _.template(preview_template,{episode:episode, theodul:data.theodul, embed:data.embed,dozent:dozent,engage_player_url:data.engage_player_url});
+
+                var preview = _.template(preview_template,{episode:episode, theodul:data.theodul, embed:data.embed,dozent:dozent,engage_player_url:data.engage_player_url, previmage:previmage});
 
 
 

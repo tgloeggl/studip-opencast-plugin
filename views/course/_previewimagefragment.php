@@ -2,7 +2,7 @@
     <span id="oc_active_episode" class="hidden" data-activeepisode="<%= episode.id %>"></span>
     <a href="http://<%=engage_player_url%>"" target="_blank">
         <span class="previewimage">
-            <img class="previewimage" src="<%= episode.prespreview %>">
+            <img class="previewimage" src="<%= previmage %>">
             <? $plugin = PluginEngine::getPlugin('OpenCast'); ?>
             <img class="playbutton" src="<?= $plugin->getPluginURL() .'/images/play-circle.png' ?>">
         </span>

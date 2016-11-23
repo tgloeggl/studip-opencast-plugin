@@ -83,10 +83,11 @@
         <div class="oce_playercontainer">
             <span id="oc_active_episode" class="hidden" data-activeepisode="<?=$active['id']?>">
             </span>
+            <? $plugin = PluginEngine::getPlugin('OpenCast'); ?>
+
             <a href="<?=URLHelper::getURL('http://'.$engage_player_url)?>" target="_blank">
                 <span class="previewimage">
-                    <img class="previewimage" src="<?=$previewimage ?>">
-                    <? $plugin = PluginEngine::getPlugin('OpenCast'); ?>
+                    <img class="previewimage" src="<?=($previewimage != false) ? $previewimage : $plugin->getPluginURL() . '/images/default-preview.png' ; ?>">
                     <img class="playbutton" src="<?= $plugin->getPluginURL() .'/images/play-circle.png' ?>">
                 </span>
             </a>
@@ -186,6 +187,7 @@
                 <? endforeach;?>
             <? endif;?>
             <? foreach($ordered_episode_ids as $pos => $item) : ?>
+            <? $prev = ($item['prespreview']) ? $item['prespreview'] : $plugin->getPluginURL() .'/images/default-preview.png';?>
 
             <li id="<?=$item['id']?>"
                 class="<?=($item['visibility'] != 'false') ? 'oce_item' : 'hidden_ocvideodiv oce_item'?><?=($item['id'] == $active['id']) ? ' oce_active_li' : ''?>"
@@ -193,7 +195,7 @@
                 data-visibility="<?=$item['visibility']?>"
                 data-pos="<?=$pos?>"
                 data-mkdate="<?=$item['mkdate']?>"
-                data-previewimage="<?=$item['prespreview']?>">
+                data-previewimage="<?=$prev?>" >
                 <a
                 href="<?= PluginEngine::getLink('opencast/course/index/'. $item['id']) ?>">
                     <div>
