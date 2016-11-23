@@ -255,11 +255,19 @@ OC = {
 
                 var episode = data.episode_data;
                 var dozent = data.perm;
+                /* uos
                 var player_template = jQuery('#playerTemplate').html();
                 var player = _.template(player_template,{episode:episode, theodul:data.theodul, embed:data.embed,dozent:dozent,engage_player_url:data.engage_player_url});
+                */
+                
+                var preview_template = jQuery('#previewimageTemplate').html();
+                var preview = _.template(preview_template,{episode:episode, theodul:data.theodul, embed:data.embed,dozent:dozent,engage_player_url:data.engage_player_url});
+
+
 
                 jQuery('.oce_playercontainer').empty();
-                jQuery('.oce_playercontainer').html(player);
+                //jQuery('.oce_playercontainer').html(player);
+                jQuery('.oce_playercontainer').html(preview);
                 jQuery('#oc-togglevis').attr('href', STUDIP.URLHelper.getURL('plugins.php/opencast/course/toggle_visibility/' + episode_id  + '/' + episode.position));
                 jQuery('.oce_playercontainer').removeClass('oc_opaque');
                 jQuery('#oc_balls').hide();

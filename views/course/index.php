@@ -16,7 +16,7 @@
 
 <?
     $sidebar = Sidebar::get();
-    
+
     if($GLOBALS ['perm']->have_studip_perm ('dozent', $this->course_id))
     {
         $actions = new ActionsWidget ();
@@ -28,7 +28,7 @@
             if($series_metadata [0] ['schedule'] == '1')
             {
                 $actions->addLink (_ ("Medien hochladen"), '#', 'icons/16/blue/upload.png', array (
-                        'id' => 'oc_upload_dialog' 
+                        'id' => 'oc_upload_dialog'
                ));
             }
 
@@ -36,7 +36,7 @@
         {
             $actions->addLink (_('Neue Series anlegen'), PluginEngine::getLink ('opencast/course/create_series/'), 'icons/16/blue/tools.png');
             $actions->addLink (_ ('Vorhandene Series verknüpfen'), '#', 'icons/16/blue/group.png', array (
-                    'id' => 'oc_config_dialog' 
+                    'id' => 'oc_config_dialog'
            ));
         }
         //todo - should this already be visibile for teachers?
@@ -83,6 +83,14 @@
         <div class="oce_playercontainer">
             <span id="oc_active_episode" class="hidden" data-activeepisode="<?=$active['id']?>">
             </span>
+            <a href="<?=URLHelper::getURL('http://'.$engage_player_url)?>" target="_blank">
+                <span class="previewimage">
+                    <img class="previewimage" src="<?=$previewimage ?>">
+                    <? $plugin = PluginEngine::getPlugin('OpenCast'); ?>
+                    <img class="playbutton" src="<?= $plugin->getPluginURL() .'/images/play-circle.png' ?>">
+                </span>
+            </a>
+            <? if(false) : //UOSHACK?>
             <? if($theodul) : ?>
                 <iframe src="<?=$embed?>"
                         style="border:0px #FFFFFF none;"
@@ -103,6 +111,7 @@
                     name="Opencast Matterhorn - Media Player" scrolling="no"
                     frameborder="0" marginheight="0px" marginwidth="0px"  height="250px">
                 </iframe>
+             <? endif; ?>
              <? endif; ?>
             <br>
             <div class="oce_emetadata">
@@ -177,12 +186,14 @@
                 <? endforeach;?>
             <? endif;?>
             <? foreach($ordered_episode_ids as $pos => $item) : ?>
+
             <li id="<?=$item['id']?>"
                 class="<?=($item['visibility'] != 'false') ? 'oce_item' : 'hidden_ocvideodiv oce_item'?><?=($item['id'] == $active['id']) ? ' oce_active_li' : ''?>"
                 data-courseId="<?=$course_id?>"
                 data-visibility="<?=$item['visibility']?>"
                 data-pos="<?=$pos?>"
-                data-mkdate="<?=$item['mkdate']?>">
+                data-mkdate="<?=$item['mkdate']?>"
+                data-previewimage="<?=$item['prespreview']?>">
                 <a
                 href="<?= PluginEngine::getLink('opencast/course/index/'. $item['id']) ?>">
                     <div>
@@ -222,5 +233,5 @@
 
 <!--- hidden -->
 <div class="hidden" id="course_id" data-courseId="<?=$course_id?>"></div>
-<?= $this->render_partial("course/_playerfragment", array()) ?>
+<?= $this->render_partial("course/_previewimagefragment", array()) ?>
 <?= $this->render_partial("course/_episodelist", array()) ?>

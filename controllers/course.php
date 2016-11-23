@@ -139,6 +139,15 @@ class CourseController extends StudipController
                     if(!empty($this->ordered_episode_ids)) {
                         $engage_url =  parse_url($this->search_client->getBaseURL());
 
+                        foreach($this->ordered_episode_ids as $ep) {
+                            if($ep['id'] == $this->active_id) {
+                                if($ep['prespreview']){
+                                    $this->previewimage = $ep['prespreview'];
+                                } else {
+                                    $this->previewimage = false;
+                                }
+                            }
+                        }
                         if($this->theodul) {
                             $this->embed =  $this->search_client->getBaseURL() ."/engage/theodul/ui/core.html?id=".$this->active_id . "&mode=embed";
                         } else {
@@ -205,7 +214,7 @@ class CourseController extends StudipController
             OCSeriesModel::setSeriesforCourse($course_id, $serie, 'visible', 0, time());
             log_event('OC_CONNECT_SERIES',$serie, $course_id);
         }
-        $this->flash['messages'] = array('success'=> _("Änderungen wurden erfolgreich übernommen. Es wurde eine Serie für den Kurs verknüpft."));
+        $this->flash['messages'] = array('success'=> _("Änderungen wurden erfolgreich übernommen. Es wurde eine Serie für den Kurs verknï¿½pft."));
 
         $this->redirect(PluginEngine::getLink('opencast/course/index'));
     }
@@ -276,7 +285,7 @@ class CourseController extends StudipController
                 $this->flash['messages'] = array('error'=> _("Aufzeichnung konnte nicht geplant werden."));
             }
         } else {
-            throw new Exception(_("Sie haben leider keine Berechtigungen um diese Aktion durchzuführen"));
+            throw new Exception(_("Sie haben leider keine Berechtigungen um diese Aktion durchzufï¿½hren"));
         }
         $this->redirect(PluginEngine::getLink('opencast/course/scheduler'));
     }
@@ -294,7 +303,7 @@ class CourseController extends StudipController
                 $this->flash['messages'] = array('error'=> _("Die geplante Aufzeichnung konnte nicht entfernt werden."));
             }
         } else {
-            throw new Exception(_("Sie haben leider keine Berechtigungen um diese Aktion durchzuführen"));
+            throw new Exception(_("Sie haben leider keine Berechtigungen um diese Aktion durchzufï¿½hren"));
         }
 
         $this->redirect(PluginEngine::getLink('opencast/course/scheduler'));
@@ -316,7 +325,7 @@ class CourseController extends StudipController
                 $this->flash['messages'] = array('error'=> _("Die geplante Aufzeichnung konnte nicht aktualisiert werden."));
             }
         } else {
-            throw new Exception(_("Sie haben leider keine Berechtigungen um diese Aktion durchzuführen"));
+            throw new Exception(_("Sie haben leider keine Berechtigungen um diese Aktion durchzufï¿½hren"));
         }
 
         $this->redirect(PluginEngine::getLink('opencast/course/scheduler'));
@@ -335,7 +344,7 @@ class CourseController extends StudipController
                 throw new Exception(_("Verbindung zum Series-Service konnte nicht hergestellt werden."));
             }
         } else {
-           throw new Exception(_("Sie haben leider keine Berechtigungen um diese Aktion durchzuführen"));
+           throw new Exception(_("Sie haben leider keine Berechtigungen um diese Aktion durchzufï¿½hren"));
         }
         $this->redirect(PluginEngine::getLink('opencast/course/index'));
     }
@@ -368,7 +377,7 @@ class CourseController extends StudipController
                 $this->set_status('500');
                 $this->render_nothing();
             }
-            else throw new Exception(_("Sie haben leider keine Berechtigungen um diese Aktion durchzuführen"));
+            else throw new Exception(_("Sie haben leider keine Berechtigungen um diese Aktion durchzufï¿½hren"));
 
         }
         if (Request::isXhr()) {
@@ -414,7 +423,7 @@ class CourseController extends StudipController
                 PageLayout::addHeadElement('script', $script_attributes, '');
             }
 
-            //TODO: gibt es keine generische Funktion dafür?
+            //TODO: gibt es keine generische Funktion dafï¿½r?
             $this->rel_canonical_path = $GLOBALS['CANONICAL_RELATIVE_PATH_STUDIP'] . 'plugins_packages/elan-ev/OpenCast';
         } catch (Exception $e) {
             $this->flash['error'] = $e->getMessage();
@@ -444,7 +453,7 @@ class CourseController extends StudipController
                 }
             }
         } else {
-            throw new Exception(_("Sie haben leider keine Berechtigungen um diese Aktion durchzuführen"));
+            throw new Exception(_("Sie haben leider keine Berechtigungen um diese Aktion durchzufï¿½hren"));
         }
 
         $this->redirect(PluginEngine::getLink('opencast/course/scheduler'));
@@ -492,9 +501,9 @@ class CourseController extends StudipController
 
     function remove_failed_action($workflow_id) {
         if(OCModel::removeWorkflowIDforCourse($workflow_id, $this->course_id)){
-            $this->flash['messages'] = array('success'=> _("Die hochgeladenen Daten wurden gelöscht."));
+            $this->flash['messages'] = array('success'=> _("Die hochgeladenen Daten wurden gelï¿½scht."));
         } else {
-            $this->flash['messages'] = array('error'=> _("Die hochgeladenen Daten konnten nicht gelöscht werden."));
+            $this->flash['messages'] = array('error'=> _("Die hochgeladenen Daten konnten nicht gelï¿½scht werden."));
         }
         $this->redirect(PluginEngine::getLink('opencast/course/index/'));
     }
@@ -568,7 +577,7 @@ class CourseController extends StudipController
             $occourse->toggleSeriesVisibility();
             $visibility = $occourse->getSeriesVisibility();
             $vis = array('visible' => 'sichtbar', 'invisible' => 'ausgeblendet');
-            $this->flash['messages'] = array('success'=> sprintf(_("Der Reiter in der Kursnavigation ist jetzt für alle Kursteilnehmer %s."),$vis[$visibility]));
+            $this->flash['messages'] = array('success'=> sprintf(_("Der Reiter in der Kursnavigation ist jetzt fï¿½r alle Kursteilnehmer %s."),$vis[$visibility]));
             log_event('OC_CHANGE_TAB_VISIBILITY', $this->course_id, NULL, sprintf(_("Reiter ist %s."),$vis[$visibility]));
         }
         $this->redirect(PluginEngine::getLink('opencast/course/index/false'));

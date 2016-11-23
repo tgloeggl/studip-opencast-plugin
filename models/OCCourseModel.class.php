@@ -171,8 +171,13 @@ class OCCourseModel
 
 
                     foreach($episode->mediapackage->attachments->attachment as $attachment) {
-                        if($attachment->type === 'presenter/search+preview') $preview = $attachment->url;
+                        if($attachment->type === "presenter/search+preview") $preview = $attachment->url;
+                        
+                        if($attachment->type === "presentation/player+preview") {
+                            $prespreview = $attachment->url;
+                        }
                     }
+
 
                     foreach($episode->mediapackage->media->track as $track) {
                         // TODO CHECK CONDITIONS FOR MEDIAPACKAGE AUDIO AND VIDEO DL
@@ -198,6 +203,7 @@ class OCCourseModel
                         'description' => OCModel::sanatizeContent($episode->dcDescription),
                         'author' => OCModel::sanatizeContent($episode->dcCreator),
                         'preview' => $preview,
+                        'prespreview' => $prespreview,
                         'presenter_download' => $presenter_download,
                         'presentation_download' => $presentation_download,
                         'audio_download' => $audio_download,
@@ -243,7 +249,7 @@ class OCCourseModel
                 );
             }
         }
-        
+
         return $episodes;
 
     }

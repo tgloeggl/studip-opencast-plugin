@@ -1,3 +1,6 @@
+// out: oc.css, sourcemap: true, compress: true
+
+
 @import "flex.less";
 
 .conf-form {
@@ -168,6 +171,26 @@
     margin: 0 auto;
     width: 460px;
     height: 415px;
+  }
+
+  .previewimage {
+    position: relative;
+    left: 0;
+    top: 0;
+    img.previewimage {
+     position: relative;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+    img.playbutton {
+        position: absolute;
+        width: 50%;
+        left: 25%;
+        bottom: 25px;
+        opacity: 0.6;
+
+    }
   }
 
   @media only screen and (max-width: 1070px) {
