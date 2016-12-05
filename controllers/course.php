@@ -520,7 +520,7 @@ class CourseController extends StudipController
                 $e['author'] = $e['author'] !=''? $e['author'] : 'Keine Angaben vorhanden';
                 $e['description'] =$e['description'] !='' ? $e['description']  : 'Keine Beschreibung vorhanden';
                 $e['start'] = date("d.m.Y H:m",strtotime($e['start']));
-                
+
                 $cand_episode = $e;
             }
         }

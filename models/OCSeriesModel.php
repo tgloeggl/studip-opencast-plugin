@@ -260,14 +260,19 @@ class OCSeriesModel {
     }
 
     /**
-     * createSeriesXML - creates an xml representation for a new OC-Series
+     * createSeriesDC - creates an xml representation for a new OC-Series
      *
      * @param string $course_id
      * @return string xml - the xml representation of the string
      */
     static function createSeriesDC($course_id) {
 
-        require_once 'lib/classes/Institute.class.php';
+        if (version_compare($GLOBALS['SOFTWARE_VERSION'], "3.3", '<=')) {
+            require_once 'lib/classes/Institute.class.php';
+        } else {
+            require_once 'lib/models/Institute.class.php';
+        }
+        
         $course = new Seminar($course_id);
         $name = $course->getName();
         $license = "© " . gmdate(Y) . " " . $GLOBALS['UNI_NAME_CLEAN'];
