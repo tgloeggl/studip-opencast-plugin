@@ -1,6 +1,6 @@
 <script type="text/html" id='previewimageTemplate'>
     <span id="oc_active_episode" class="hidden" data-activeepisode="<%= episode.id %>"></span>
-    <a href="http://<%=engage_player_url%>"" target="_blank">
+    <a href="http://<%=engage_player_url%>" target="_blank">
         <span class="previewimage">
             <img class="previewimage" src="<%= previmage %>">
             <? $plugin = PluginEngine::getPlugin('OpenCast'); ?>
@@ -20,7 +20,6 @@
             <div style="text-align: left; font-style: italic;">Weitere
                 Optionen:</div>
             <div class="button-group">
-                <a class="ocextern button" href="http://<%=engage_player_url%>" target="_blank" tabindex="0"><?= _('Erweiterter Player') ?></a>
                 <% if(episode.presenter_download) { %>
                     <a class="download presenter button" href="<%=episode.presenter_download%>" target="_blank" tabindex="0"><?= _('ReferentIn') ?></a>
                 <% } %>
