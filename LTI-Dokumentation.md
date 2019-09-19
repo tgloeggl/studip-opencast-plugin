@@ -22,3 +22,6 @@ LTI in Opencast Konfigurieren:
   enable:
   ```org.opencastproject.security.custom.roles.pattern=^[0-9a-f-]+_(Learner|Instructor)$```
 
+
+Dokumentation at opencast.org
+[1]https://docs.opencast.org/develop/admin/modules/ltimodule/#configure-lti
